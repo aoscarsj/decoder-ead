@@ -1,0 +1,12 @@
+[submodule "authuser-services"]
+	path = authuser-services
+	url = git@github.com:aoscarsj/authuser-services.git
+[submodule "notification-services"]
+	path = notification-services
+	url = git@github.com:aoscarsj/notification-services.git
+[submodule "course-services"]
+	path = course-services
+	url = git@github.com:aoscarsj/course-services.git
+[submodule "ead-services"]
+	path = ead-services
+	url = git@github.com:aoscarsj/ead-services.git
