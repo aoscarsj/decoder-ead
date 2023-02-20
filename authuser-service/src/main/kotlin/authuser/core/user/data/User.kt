@@ -45,7 +45,7 @@ data class User(
     val updated: LocalDateTime? = null,
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    val usersCourses: Set<UserCourse> = setOf()
+    val usersCourses: Set<UserCourse> = mutableSetOf()
 
 ) : RepresentationModel<User>(), Serializable {
     companion object {
