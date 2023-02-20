@@ -91,7 +91,7 @@ class UserServiceImpl(
 
         val user = findById(userId)
 
-        logger.info("user to be changed: $user")
+        logger.info("user to be changed, userId: #${user.userId}")
         updateRequest.apply {
 
             if (!email.isNullOrEmpty())
@@ -104,7 +104,7 @@ class UserServiceImpl(
                 user.cpf = cpf
         }
 
-        logger.info("Saving updated user: $user")
+        logger.info("Saving updated user, userId: #${user.userId}")
         return userRepository.save(user)
     }
 
