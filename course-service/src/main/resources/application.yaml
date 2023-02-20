@@ -1,0 +1,32 @@
+server:
+  port: 8082
+application:
+  prefix: CS
+spring:
+  profiles:
+    active: development
+  application:
+    name: course-services
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ead-course
+    username: postgres
+    password: d3c0d3r
+  jpa:
+    hibernate:
+      ddl-auto: update
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+      jdbc:
+        lob.nom-contextual-creation: true
+        properties:
+          hibernate:
+            show_sql: true
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+
+---
+spring:
+  profiles: development
+
+---
+spring:
+  profiles: production
