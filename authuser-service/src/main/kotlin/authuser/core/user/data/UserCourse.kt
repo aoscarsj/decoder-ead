@@ -1,6 +1,7 @@
 package authuser.core.user.data
 
 import com.fasterxml.jackson.annotation.JsonInclude
+import java.io.Serializable
 import java.util.*
 import javax.persistence.*
 
@@ -18,4 +19,8 @@ data class UserCourse(
 
     @Column(nullable = false)
     val courseId: UUID
-)
+): Serializable {
+    companion object {
+        private const val serialVersionUID: Long = 1L
+    }
+}
