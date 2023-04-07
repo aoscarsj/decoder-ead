@@ -1,7 +1,7 @@
 package course.core.course.data.request
 
-import course.core.course.data.CourseLevel
-import course.core.course.data.CourseStatus
+import course.core.course.data.Course.CourseLevel
+import course.core.course.data.Course.CourseStatus
 
 data class CourseSearchRequest (
     val courseLevel: CourseLevel? = null,

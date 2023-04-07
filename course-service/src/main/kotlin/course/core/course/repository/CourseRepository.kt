@@ -1,8 +1,7 @@
 package course.core.course.repository
 
 import course.core.course.data.Course
-import course.core.course.data.CourseLevel
-import course.core.course.data.CourseStatus
+import course.core.course.data.Course.*
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository

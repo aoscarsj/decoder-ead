@@ -45,12 +45,7 @@ data class Course(
         mappedBy = "course", fetch = FetchType.LAZY
     )
     @Fetch(FetchMode.SUBSELECT)
-    val modules: MutableSet<Module> = mutableSetOf(),
-
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
-    val coursesUsers: Set<CourseUser> = mutableSetOf()
-
+    val modules: MutableSet<Module> = mutableSetOf()
 ) : Serializable {
 
     companion object {
@@ -71,10 +66,10 @@ data class Course(
             }
         }
     }
-}
 
-enum class CourseStatus { IN_PROGRESS, CONCLUDED }
-enum class CourseLevel { BEGINNER, INTERMEDIARY, ADVANCED }
+    enum class CourseStatus { IN_PROGRESS, CONCLUDED }
+    enum class CourseLevel { BEGINNER, INTERMEDIARY, ADVANCED }
+}
 
 /* COMMENTS
 - @OneToMany(mappedBy = "course", fetch = FetchType.LAZY, cascade = [CascadeType.ALL],
