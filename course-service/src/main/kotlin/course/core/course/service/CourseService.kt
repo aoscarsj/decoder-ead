@@ -15,4 +15,6 @@ interface CourseService {
     fun update(courseId: UUID, updateRequest: CourseUpdateRequest): Course
     fun findAll(): List<Course>
     fun findAll(searchRequest: CourseSearchRequest, pageable: Pageable): Page<Course>
+
+    fun findAllByUser(userId: UUID, pageable: Pageable): Page<Course>
 }

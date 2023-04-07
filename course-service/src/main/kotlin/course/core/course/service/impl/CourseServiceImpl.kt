@@ -7,8 +7,11 @@ import course.core.course.data.request.CourseUpdateRequest
 import course.core.course.exception.CourseException
 import course.core.course.exception.CourseRegistrationException
 import course.core.course.repository.CourseRepository
+import course.core.course.repository.CourseUserRepository
 import course.core.course.service.CourseService
 import course.core.module.service.ModuleService
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
@@ -21,8 +24,13 @@ import java.util.*
 
 @Service
 class CourseServiceImpl(
-    private val courseRepository: CourseRepository, private val moduleService: ModuleService
+    private val courseRepository: CourseRepository,
+    private val moduleService: ModuleService,
+    private val courseUserRepository: CourseUserRepository
 ) : CourseService {
+
+    private val logger: Logger by lazy { LogManager.getLogger(this.javaClass) }
+
     @Transactional // only transaction if something goes wrong, return
     override fun delete(courseId: UUID) {
 
@@ -107,6 +115,11 @@ class CourseServiceImpl(
             }
         }
 
+    }
+
+    override fun findAllByUser(userId: UUID, pageable: Pageable): Page<Course> {
+        logger.info("searching courses by user #$userId")
+        return courseUserRepository.findAllByUserId(userId, pageable).map { it.course }
     }
 
 
