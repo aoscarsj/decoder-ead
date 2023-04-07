@@ -1,9 +1,9 @@
 package authuser.core.user.data
 
 import com.fasterxml.jackson.annotation.JsonInclude
+import javax.persistence.*
 import java.io.Serializable
 import java.util.*
-import javax.persistence.*
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Entity

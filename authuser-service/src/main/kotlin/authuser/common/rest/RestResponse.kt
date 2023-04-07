@@ -1,6 +1,7 @@
 package authuser.common.rest
 
 import org.springframework.http.HttpStatus
+import java.io.Serializable
 
 open class RestResponse<T>(
     val message: String,
@@ -9,4 +10,4 @@ open class RestResponse<T>(
     val httpStatus: HttpStatus = HttpStatus.OK,
     val httpCode: Int = httpStatus.value(),
     val errors: Collection<RestItemError> = emptyList()
-)
+): Serializable

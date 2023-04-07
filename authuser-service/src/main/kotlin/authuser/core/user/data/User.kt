@@ -3,7 +3,6 @@ package authuser.core.user.data
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.annotation.JsonProperty
 import org.springframework.hateoas.RepresentationModel
 import java.io.Serializable
 import java.time.LocalDateTime
@@ -43,11 +42,8 @@ data class User(
     val created: LocalDateTime = LocalDateTime.now(ZoneId.of("UTC")),
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     val updated: LocalDateTime? = null,
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    val usersCourses: Set<UserCourse> = mutableSetOf()
 
-) : RepresentationModel<User>(), Serializable {
+    ) : RepresentationModel<User>(), Serializable {
     companion object {
         private const val serialVersionUID: Long = 1L
 

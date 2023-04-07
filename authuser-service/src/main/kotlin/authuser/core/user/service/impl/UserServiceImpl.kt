@@ -17,6 +17,7 @@ import authuser.core.user.service.UserService
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus.*
@@ -44,6 +45,11 @@ class UserServiceImpl(
             val isAllFilled = hasStatusType && hasEmail
 
             return when {
+
+                courseId != null -> {
+                    val users = userRepository.findAllOfCourse(courseId)
+                    return PageImpl(users, page, users.size.toLong())
+                }
 
                 isAllFilled -> userRepository.findAllByTypeAndStatusAndEmailContains(
                     type!!, status!!, email!!, page
