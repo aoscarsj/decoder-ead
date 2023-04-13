@@ -1,7 +1,6 @@
 package authuser.integration.service.course.client
 
 import authuser.common.const.COURSE_SERVICES_COURSES_BASE_RESOURCE
-import authuser.common.const.COURSE_SERVICES_URI
 import authuser.common.rest.RestResponse
 import authuser.integration.service.course.data.Course
 import org.springframework.cloud.openfeign.FeignClient
@@ -12,7 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import java.util.*
 
 
-@FeignClient(name = "course-services-v1", url = COURSE_SERVICES_URI)
+@FeignClient(name = "course-services-v1", url = "\${ead.api.url.course}")
 interface CourseClientV1 {
 
     @GetMapping(COURSE_SERVICES_COURSES_BASE_RESOURCE)
