@@ -1,8 +1,8 @@
 package authuser.core.user.repository
 
 import authuser.core.user.data.User
-import authuser.core.user.data.UserStatus
-import authuser.core.user.data.UserType
+import authuser.core.user.data.User.UserStatus
+import authuser.core.user.data.User.UserType
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository

@@ -1,6 +1,8 @@
 package authuser.core.user.data
 
-import java.util.UUID
+import authuser.core.user.data.User.UserStatus
+import authuser.core.user.data.User.UserType
+import java.util.*
 
 data class UserSearchRequest(
     val email: String? = null,

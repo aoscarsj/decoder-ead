@@ -61,7 +61,6 @@ data class User(
             }
         }
     }
+    enum class UserStatus { ACTIVE, BLOCKED }
+    enum class UserType { ADMIN, STUDENT, INSTRUCTOR }
 }
-
-enum class UserStatus { ACTIVE, BLOCKED }
-enum class UserType { ADMIN, STUDENT, INSTRUCTOR }
