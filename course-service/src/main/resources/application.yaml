@@ -22,7 +22,10 @@ spring:
             show_sql: true
   autoconfigure:
     exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
-
+ead:
+  api:
+    url:
+      authuser: http://localhost:8087
 ---
 spring:
   profiles: development
@@ -30,3 +33,4 @@ spring:
 ---
 spring:
   profiles: production
+
