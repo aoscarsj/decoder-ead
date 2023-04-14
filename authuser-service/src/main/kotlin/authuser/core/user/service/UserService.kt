@@ -11,6 +11,7 @@ import java.util.*
 interface UserService {
 
     fun findAll(searchRequest: UserSearchRequest, page: Pageable): Page<User>
+    fun findAllByCourse(courseId: UUID, page: Pageable): Page<User>
     fun findById(userId: UUID): User?
     fun delete(userId: UUID)
     fun signup(request: UserCreateRequest): User

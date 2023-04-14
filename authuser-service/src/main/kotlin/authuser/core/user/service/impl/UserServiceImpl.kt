@@ -12,6 +12,7 @@ import authuser.core.user.data.UserUpdateRequest
 import authuser.core.user.exception.PasswordException
 import authuser.core.user.exception.UserException
 import authuser.core.user.exception.UserRegistrationException
+import authuser.core.user.repository.UserCourseRepository
 import authuser.core.user.repository.UserRepository
 import authuser.core.user.service.UserService
 import org.apache.logging.log4j.LogManager
@@ -27,7 +28,8 @@ import java.util.*
 
 @Service
 class UserServiceImpl(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val userCourseRepository: UserCourseRepository
 ) : UserService {
 
     private val passwordEncoder: BCryptPasswordEncoder = BCryptPasswordEncoder()
@@ -68,6 +70,12 @@ class UserServiceImpl(
                 else -> userRepository.findAll(page)
             }
         }
+    }
+
+    override fun findAllByCourse(courseId: UUID, page: Pageable): Page<User> {
+
+        logger.info("searching users by course #$courseId")
+        return userCourseRepository.findAllByCourseId(courseId, page).map { it.user }
     }
 
 

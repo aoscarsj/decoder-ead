@@ -1,6 +1,6 @@
 package authuser.integration.service.course.client
 
-import authuser.common.const.COURSE_SERVICES_COURSES_BASE_RESOURCE
+import authuser.common.const.COURSE_SERVICES_COURSES_BY_USERS_RESOURCE
 import authuser.common.rest.RestResponse
 import authuser.integration.service.course.data.Course
 import org.springframework.cloud.openfeign.FeignClient
@@ -14,7 +14,7 @@ import java.util.*
 @FeignClient(name = "course-services-v1", url = "\${ead.api.url.course}")
 interface CourseClientV1 {
 
-    @GetMapping(COURSE_SERVICES_COURSES_BASE_RESOURCE)
+    @GetMapping(COURSE_SERVICES_COURSES_BY_USERS_RESOURCE)
     fun findAllCoursesByUser(@PathVariable userId: UUID, page: Pageable): RestResponse<Page<Course>>
 
 }

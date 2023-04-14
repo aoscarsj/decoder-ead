@@ -7,14 +7,13 @@ import authuser.core.user.data.UserUpdateRequest
 import authuser.core.user.data.UserUpdateRequest.UserView.Companion.ImagePut
 import authuser.core.user.data.UserUpdateRequest.UserView.Companion.PasswordPut
 import authuser.core.user.data.UserUpdateRequest.UserView.Companion.UserPut
+import authuser.core.user.extension.insertHateoasLink
 import authuser.core.user.service.UserService
 import com.fasterxml.jackson.annotation.JsonView
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort.Direction.ASC
 import org.springframework.data.web.PageableDefault
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn
 import org.springframework.web.bind.annotation.*
 import java.util.*
 
@@ -31,15 +30,17 @@ class UserRestV1(
         @PageableDefault(page = 0, size = 10, sort = ["userId"], direction = ASC) page: Pageable
     ): RestResponse<Page<User>> {
 
-        val users = userService.findAll(searchRequest, page)
+        val users = userService.findAll(searchRequest, page).insertHateoasLink()
 
-        if (users.isEmpty.not()) {
-            for (user in users.toList()) {
-                user.add(
-                    linkTo(methodOn(UserRestV1::class.javaObjectType).find(user.userId!!)).withSelfRel()
-                )
-            }
-        }
+        return RestResponse("Users was collected", users)
+    }
+    @GetMapping("/courses/{courseId}")
+    fun findAllByCourse(
+        @PathVariable courseId: UUID,
+        @PageableDefault page: Pageable
+    ): RestResponse<Page<User>> {
+
+        val users = userService.findAllByCourse(courseId, page)
 
         return RestResponse("Users was collected", users)
     }
