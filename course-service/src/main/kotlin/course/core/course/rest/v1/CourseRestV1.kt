@@ -8,7 +8,6 @@ import course.core.course.data.request.CourseUpdateRequest
 import course.core.course.service.CourseService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
-import org.springframework.data.domain.Sort
 import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
@@ -33,7 +32,7 @@ class CourseRestV1(
     }
 
     @DeleteMapping("/{courseId}")
-    fun remove(@PathVariable(value = "courseId") courseId: UUID): RestResponse<Any> {
+    fun remove(@PathVariable courseId: UUID): RestResponse<Any> {
 
         courseService.delete(courseId)
         return RestResponse("Course deleted successful")
@@ -41,8 +40,7 @@ class CourseRestV1(
 
     @PutMapping("/{courseId}")
     fun update(
-        @PathVariable(value = "courseId") courseId: UUID,
-        @RequestBody @Valid courseUpdateRequest: CourseUpdateRequest
+        @PathVariable courseId: UUID, @RequestBody @Valid courseUpdateRequest: CourseUpdateRequest
     ): RestResponse<Course> {
 
         val course = courseService.update(courseId, courseUpdateRequest)
@@ -51,18 +49,13 @@ class CourseRestV1(
 
     @GetMapping
     fun findAll(
-        searchRequest: CourseSearchRequest,
-        @PageableDefault(
-            page = 0, size = 10, sort = ["courseId"], direction = Sort.Direction.ASC
-        ) page: Pageable
+        searchRequest: CourseSearchRequest, @PageableDefault page: Pageable
     ): RestResponse<Page<Course>> =
         RestResponse("Courses was collected", courseService.findAll(searchRequest, page))
 
     @GetMapping("/users/{userId}")
     fun findAllByUser(
-        @PathVariable userId: UUID, @PageableDefault(
-            page = 0, size = 10, sort = ["userId"], direction = Sort.Direction.ASC
-        ) page: Pageable
+        @PathVariable userId: UUID, @PageableDefault page: Pageable
     ): RestResponse<Page<Course>> =
         RestResponse("Courses was collected", courseService.findAllByUser(userId, page))
 
