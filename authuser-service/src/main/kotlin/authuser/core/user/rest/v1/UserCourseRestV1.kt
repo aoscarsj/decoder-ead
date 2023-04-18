@@ -7,28 +7,22 @@ import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
-import org.springframework.data.domain.Sort
 import org.springframework.data.web.PageableDefault
-import org.springframework.web.bind.annotation.CrossOrigin
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import java.util.*
 
 @RestController
 @CrossOrigin(origins = ["*"], maxAge = 3600)
+@RequestMapping("/users")
 class UserCourseRestV1(
     private val courseHelper: CourseHelper
 ) {
 
     private val logger: Logger by lazy { LogManager.getLogger(this.javaClass) }
 
-    @GetMapping("/users/{userId}/courses")
+    @GetMapping("/{userId}/courses")
     fun findAllCoursesByUsers(
-        @PathVariable(value = "userId") userId: UUID,
-        @PageableDefault(
-            page = 0, size = 10, sort = ["userId"], direction = Sort.Direction.ASC
-        ) page: Pageable
+        @PathVariable userId: UUID, @PageableDefault page: Pageable
     ): RestResponse<Page<Course>> {
 
         logger.info("Starting searches for courses by user #$userId")

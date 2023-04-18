@@ -12,7 +12,6 @@ import authuser.core.user.service.UserService
 import com.fasterxml.jackson.annotation.JsonView
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
-import org.springframework.data.domain.Sort.Direction.ASC
 import org.springframework.data.web.PageableDefault
 import org.springframework.web.bind.annotation.*
 import java.util.*
@@ -26,34 +25,32 @@ class UserRestV1(
 
     @GetMapping
     fun findAll(
-        searchRequest: UserSearchRequest,
-        @PageableDefault(page = 0, size = 10, sort = ["userId"], direction = ASC) page: Pageable
+        searchRequest: UserSearchRequest, @PageableDefault page: Pageable
     ): RestResponse<Page<User>> {
 
         val users = userService.findAll(searchRequest, page).insertHateoasLink()
 
         return RestResponse("Users was collected", users)
     }
+
     @GetMapping("/courses/{courseId}")
     fun findAllByCourse(
-        @PathVariable courseId: UUID,
-        @PageableDefault page: Pageable
+        @PathVariable courseId: UUID, @PageableDefault page: Pageable
     ): RestResponse<Page<User>> {
 
         val users = userService.findAllByCourse(courseId, page)
-
         return RestResponse("Users was collected", users)
     }
 
     @GetMapping("/{userId}")
-    fun find(@PathVariable(value = "userId") userId: UUID): RestResponse<User?> {
+    fun find(@PathVariable userId: UUID): RestResponse<User?> {
 
         val user = userService.findById(userId)
         return RestResponse("user was collected", user)
     }
 
     @DeleteMapping("/{userId}")
-    fun remove(@PathVariable(value = "userId") userId: UUID): RestResponse<Any> {
+    fun remove(@PathVariable userId: UUID): RestResponse<Any> {
 
         userService.delete(userId)
         return RestResponse("User deleted successful")
@@ -61,7 +58,7 @@ class UserRestV1(
 
     @PutMapping("/{userId}")
     fun update(
-        @PathVariable(value = "userId") userId: UUID,
+        @PathVariable userId: UUID,
         @RequestBody @JsonView(UserPut::class) request: UserUpdateRequest
     ): RestResponse<Any> {
 
@@ -71,7 +68,7 @@ class UserRestV1(
 
     @PutMapping("/{userId}/password")
     fun updatePassword(
-        @PathVariable(value = "userId") userId: UUID,
+        @PathVariable userId: UUID,
         @RequestBody @JsonView(PasswordPut::class) request: UserUpdateRequest
     ): RestResponse<Any> {
 
@@ -81,7 +78,7 @@ class UserRestV1(
 
     @PutMapping("/{userId}/image")
     fun updateImage(
-        @PathVariable(value = "userId") userId: UUID,
+        @PathVariable userId: UUID,
         @RequestBody @JsonView(ImagePut::class) request: UserUpdateRequest
     ): RestResponse<Any> {
 
