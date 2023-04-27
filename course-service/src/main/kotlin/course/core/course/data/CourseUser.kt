@@ -12,7 +12,7 @@ data class CourseUser(
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    val courseUserId: UUID,
+    val courseUserId: UUID? = null,
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     val course: Course,
@@ -22,5 +22,8 @@ data class CourseUser(
 ) : Serializable {
     companion object {
         private const val serialVersionUID: Long = 1L
+        fun from(course: Course, userId: UUID): CourseUser =
+            CourseUser(course = course, userId = userId)
+
     }
 }
