@@ -1,19 +1,22 @@
 package course.core.course.helper
 
+import course.common.rest.RestException
 import course.core.course.exception.CourseException
-import course.integrations.service.authuser.client.UserClientV1
+import course.integrations.service.authuser.client.AuthUserClient
 import course.integrations.service.authuser.data.User
+import feign.FeignException
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
-import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR
+import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.stereotype.Component
 import java.util.*
 
 @Component
 class UserHelper(
-    private val userClient: UserClientV1
+    private val userClient: AuthUserClient
 ) {
     private val logger: Logger by lazy { LogManager.getLogger(this.javaClass) }
 
@@ -21,11 +24,32 @@ class UserHelper(
 
         return try {
             userClient.findAllUsersByCourse(courseId, page).response ?: throw CourseException(
-                "User not found by course #$courseId", httpStatus = HttpStatus.NOT_FOUND
+                "User not found by course #$courseId", NOT_FOUND
             )
         } catch (e: Exception) {
-            logger.error("Error on finding users by course", e)
-            throw e
+
+            logger.error("Error in finding users by course {}", e.stackTrace)
+
+            throw RestException(
+                INTERNAL_SERVER_ERROR, e.message ?: "Error in finding users by course"
+            )
         }
+    }
+
+    fun findUser(userId: UUID): User = try {
+        val userRequest = userClient.findUser(userId)
+        with(userRequest) {
+            response ?: throw RestException(NOT_FOUND, "User not found")
+        }
+    } catch (e: FeignException) {
+
+        logger.error("Error in fetching user #$userId {}", e.localizedMessage)
+        if(e.localizedMessage.contains("NOT_FOUND"))
+            throw RestException(NOT_FOUND, "Error: User not found.")
+        throw RestException(INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR.toString())
+    } catch (e: Exception) {
+
+        logger.error("Error in fetching user #$userId", e.stackTrace)
+        throw RestException(INTERNAL_SERVER_ERROR, e.message ?: "Error in fetching user")
     }
 }

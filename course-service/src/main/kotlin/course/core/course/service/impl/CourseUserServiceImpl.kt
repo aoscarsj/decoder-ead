@@ -4,8 +4,10 @@ import course.core.course.data.Course
 import course.core.course.data.CourseUser
 import course.core.course.data.request.CourseSubscriptionRequest
 import course.core.course.exception.CourseUserRegistrationException
+import course.core.course.helper.UserHelper
 import course.core.course.repository.CourseUserRepository
 import course.core.course.service.CourseUserService
+import course.integrations.service.authuser.data.User
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.springframework.http.HttpStatus
@@ -14,7 +16,8 @@ import java.util.*
 
 @Service
 class CourseUserServiceImpl(
-    private val courseUserRepository: CourseUserRepository
+    private val courseUserRepository: CourseUserRepository,
+    private val userHelper: UserHelper
 ) : CourseUserService {
 
     private val logger: Logger by lazy { LogManager.getLogger(this.javaClass) }
@@ -38,6 +41,11 @@ class CourseUserServiceImpl(
         if (userEnrolledInCourse(course, subscriptionRequest.userId))
             throw CourseUserRegistrationException(
                 "Error: subscription already exists!", HttpStatus.CONFLICT
+            )
+        val user = userHelper.findUser(subscriptionRequest.userId)
+        if (user.status == User.UserStatus.BLOCKED)
+            throw CourseUserRegistrationException(
+                "Error: User is blocked.", HttpStatus.CONFLICT
             )
 
         return courseUserRepository.save(CourseUser.from(course, subscriptionRequest.userId))
