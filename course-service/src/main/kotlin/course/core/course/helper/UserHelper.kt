@@ -9,7 +9,6 @@ import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
-import org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.stereotype.Component
 import java.util.*
@@ -29,10 +28,7 @@ class UserHelper(
         } catch (e: Exception) {
 
             logger.error("Error in finding users by course {}", e.stackTrace)
-
-            throw RestException(
-                INTERNAL_SERVER_ERROR, e.message ?: "Error in finding users by course"
-            )
+            throw e
         }
     }
 
@@ -44,12 +40,12 @@ class UserHelper(
     } catch (e: FeignException) {
 
         logger.error("Error in fetching user #$userId {}", e.localizedMessage)
-        if(e.localizedMessage.contains("NOT_FOUND"))
+        if (e.localizedMessage.contains("NOT_FOUND"))
             throw RestException(NOT_FOUND, "Error: User not found.")
-        throw RestException(INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR.toString())
+        throw e
     } catch (e: Exception) {
 
         logger.error("Error in fetching user #$userId", e.stackTrace)
-        throw RestException(INTERNAL_SERVER_ERROR, e.message ?: "Error in fetching user")
+        throw e
     }
 }
