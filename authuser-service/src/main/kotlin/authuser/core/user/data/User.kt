@@ -28,7 +28,7 @@ data class User(
     var fullName: String = "",
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    val status: UserStatus = UserStatus.ACTIVE,
+    var status: UserStatus = UserStatus.ACTIVE,
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     val type: UserType = UserType.STUDENT,

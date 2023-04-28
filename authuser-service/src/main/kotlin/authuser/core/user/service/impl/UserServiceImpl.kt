@@ -116,6 +116,8 @@ class UserServiceImpl(
                 user.phoneNumber = phoneNumber
             if (!cpf.isNullOrEmpty())
                 user.cpf = cpf
+            if(status != null)
+                user.status = status
         }
 
         logger.info("Saving updated user, userId: #${user.userId}")

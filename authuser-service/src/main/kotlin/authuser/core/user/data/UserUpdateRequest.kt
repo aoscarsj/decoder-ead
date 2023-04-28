@@ -28,7 +28,10 @@ data class UserUpdateRequest(
     val cpf: String? = null,
 
     @JsonView(UserView.Companion.ImagePut::class)
-    val imageUrl: String? = null
+    val imageUrl: String? = null,
+
+    @JsonView(UserView.Companion.UserPut::class)
+    val status: User.UserStatus? = null
 ) {
 
     interface UserView {
