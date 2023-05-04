@@ -1,4 +1,4 @@
-package authuser.core.user.data
+package authuser.core.user.data.request
 
 import authuser.core.user.data.User.UserStatus
 import authuser.core.user.data.User.UserType

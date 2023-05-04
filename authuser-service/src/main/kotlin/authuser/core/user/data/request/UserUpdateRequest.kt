@@ -1,5 +1,6 @@
-package authuser.core.user.data
+package authuser.core.user.data.request
 
+import authuser.core.user.data.User
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonView
 import javax.validation.constraints.Size
