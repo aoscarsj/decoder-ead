@@ -45,7 +45,7 @@ class CourseUserServiceImpl(
         val user = userHelper.findUser(subscriptionRequest.userId)
         if (user.status == User.UserStatus.BLOCKED)
             throw CourseUserRegistrationException(
-                "Error: User is blocked.", HttpStatus.CONFLICT
+                "Error: User is blocked.", HttpStatus.UNAUTHORIZED
             )
 
         return courseUserRepository.save(CourseUser.from(course, subscriptionRequest.userId))
