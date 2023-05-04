@@ -2,8 +2,8 @@ package authuser.core.auth.rest.v1
 
 import authuser.common.rest.RestResponse
 import authuser.core.user.data.User
-import authuser.core.user.data.UserCreateRequest
-import authuser.core.user.data.UserCreateRequest.UserView.Companion.RegistrationPost
+import authuser.core.user.data.request.UserCreateRequest
+import authuser.core.user.data.request.UserCreateRequest.UserView.Companion.RegistrationPost
 import authuser.core.user.service.UserService
 import com.fasterxml.jackson.annotation.JsonView
 import org.apache.logging.log4j.LogManager

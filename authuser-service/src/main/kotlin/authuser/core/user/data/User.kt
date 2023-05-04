@@ -1,5 +1,6 @@
 package authuser.core.user.data
 
+import authuser.core.user.data.request.UserCreateRequest
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
@@ -61,6 +62,7 @@ data class User(
             }
         }
     }
+
     enum class UserStatus { ACTIVE, BLOCKED }
     enum class UserType { ADMIN, STUDENT, INSTRUCTOR }
 }

@@ -6,9 +6,9 @@ import authuser.common.extension.isUsername
 import authuser.common.rest.RestException
 import authuser.common.rest.RestItemError
 import authuser.core.user.data.User
-import authuser.core.user.data.UserCreateRequest
-import authuser.core.user.data.UserSearchRequest
-import authuser.core.user.data.UserUpdateRequest
+import authuser.core.user.data.request.UserCreateRequest
+import authuser.core.user.data.request.UserSearchRequest
+import authuser.core.user.data.request.UserUpdateRequest
 import authuser.core.user.exception.PasswordException
 import authuser.core.user.exception.UserException
 import authuser.core.user.exception.UserRegistrationException
@@ -79,19 +79,18 @@ class UserServiceImpl(
     }
 
 
-    override fun findById(userId: UUID): User {
+    override fun find(userId: UUID): User {
 
         logger.info("Searching user by userId: #$userId")
         return userRepository.findByIdOrNull(userId) ?: throw UserException(
-            "User not found",
-            NOT_FOUND
+            "User not found", NOT_FOUND
         )
     }
 
     override fun delete(userId: UUID) {
 
         logger.warn("Deleting user by userId: #$userId")
-        return userRepository.delete(findById(userId))
+        return userRepository.delete(find(userId))
     }
 
     override fun existsByUsername(user: User): Boolean =
@@ -103,7 +102,7 @@ class UserServiceImpl(
         logger.info("Starting user update")
         validateRequest(updateRequest)
 
-        val user = findById(userId)
+        val user = find(userId)
 
         logger.info("user to be changed, userId: #${user.userId}")
         updateRequest.apply {
@@ -116,7 +115,7 @@ class UserServiceImpl(
                 user.phoneNumber = phoneNumber
             if (!cpf.isNullOrEmpty())
                 user.cpf = cpf
-            if(status != null)
+            if (status != null)
                 user.status = status
         }
 
@@ -166,7 +165,7 @@ class UserServiceImpl(
     override fun updatePassword(userId: UUID, updateRequest: UserUpdateRequest) {
 
         logger.info("Starting password update for userId #$userId")
-        val user = findById(userId)
+        val user = find(userId)
         validatePassword(user, updateRequest)
 
         user.password = passwordEncoder.encode(updateRequest.password)
@@ -194,7 +193,7 @@ class UserServiceImpl(
 
     override fun updateImage(userId: UUID, updateRequest: UserUpdateRequest): User {
 
-        val user = findById(userId)
+        val user = find(userId)
 
         if (updateRequest.imageUrl.isNullOrEmpty())
             throw UserException("ImageUrl cannot be null or empty", BAD_REQUEST)

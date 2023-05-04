@@ -3,6 +3,7 @@ package authuser.core.user.helper
 import authuser.core.user.exception.UserException
 import authuser.integration.service.course.client.CourseClientV1
 import authuser.integration.service.course.data.Course
+import feign.FeignException
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.springframework.data.domain.Page
@@ -26,10 +27,17 @@ class CourseHelper(
             courseClient.findAllCoursesByUser(userId, page).response ?: throw UserException(
                 "Course not found by user #$userId", httpStatus = HttpStatus.NOT_FOUND
             )
-        } catch (e: Exception) {
+        } catch (e: FeignException) {
             logger.error("Error on finding courses by user, $e")
             throw e
         }
+    }
+
+    fun find(courseId: UUID): Course = try {
+        courseClient.findCourse(courseId).response!!
+    } catch (e: FeignException) {
+        logger.error("Error on finding course #$courseId, $e")
+        throw e
     }
 
 }

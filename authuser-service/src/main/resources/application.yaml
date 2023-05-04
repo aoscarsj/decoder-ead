@@ -28,7 +28,7 @@ spring:
 ead:
   api:
     url:
-      course: "http://localhost:8082"
+      course: http://localhost:8082
 logging:
   level:
     authuser: TRACE

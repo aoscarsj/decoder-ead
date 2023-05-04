@@ -2,11 +2,11 @@ package authuser.core.user.rest.v1
 
 import authuser.common.rest.RestResponse
 import authuser.core.user.data.User
-import authuser.core.user.data.UserSearchRequest
-import authuser.core.user.data.UserUpdateRequest
-import authuser.core.user.data.UserUpdateRequest.UserView.Companion.ImagePut
-import authuser.core.user.data.UserUpdateRequest.UserView.Companion.PasswordPut
-import authuser.core.user.data.UserUpdateRequest.UserView.Companion.UserPut
+import authuser.core.user.data.request.UserSearchRequest
+import authuser.core.user.data.request.UserUpdateRequest
+import authuser.core.user.data.request.UserUpdateRequest.UserView.Companion.ImagePut
+import authuser.core.user.data.request.UserUpdateRequest.UserView.Companion.PasswordPut
+import authuser.core.user.data.request.UserUpdateRequest.UserView.Companion.UserPut
 import authuser.core.user.extension.insertHateoasLink
 import authuser.core.user.service.UserService
 import com.fasterxml.jackson.annotation.JsonView
@@ -45,7 +45,7 @@ class UserRestV1(
     @GetMapping("/{userId}")
     fun find(@PathVariable userId: UUID): RestResponse<User?> {
 
-        val user = userService.findById(userId)
+        val user = userService.find(userId)
         return RestResponse("user was collected", user)
     }
 
