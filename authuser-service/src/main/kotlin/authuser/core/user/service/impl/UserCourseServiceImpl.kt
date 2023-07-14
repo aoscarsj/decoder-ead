@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger
 import org.springframework.http.HttpStatus.CONFLICT
 import org.springframework.http.HttpStatus.UNAUTHORIZED
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
 @Service
@@ -30,6 +31,7 @@ class UserCourseServiceImpl(
         return userEnrolled
     }
 
+    @Transactional
     override fun insert(user: User, subscriptionRequest: UserSubscriptionRequest): UserCourse {
 
         subscriptionRequest.apply {
