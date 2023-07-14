@@ -16,3 +16,9 @@ data class User(
     enum class UserStatus { ACTIVE, BLOCKED }
     enum class UserType { ADMIN, STUDENT, INSTRUCTOR }
 }
+data class UserCourse(
+
+    val userCourseId: UUID? = null,
+    val user: User,
+    val courseId: UUID
+)

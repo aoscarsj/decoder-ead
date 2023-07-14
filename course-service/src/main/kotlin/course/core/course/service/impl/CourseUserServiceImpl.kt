@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
 @Service
@@ -29,6 +30,7 @@ class CourseUserServiceImpl(
         return userEnrolled
     }
 
+    @Transactional
     override fun insert(
         course: Course,
         subscriptionRequest: CourseSubscriptionRequest
@@ -48,6 +50,13 @@ class CourseUserServiceImpl(
                 "Error: User is blocked.", HttpStatus.UNAUTHORIZED
             )
 
-        return courseUserRepository.save(CourseUser.from(course, subscriptionRequest.userId))
+        val savedSubscription = courseUserRepository.save(CourseUser.from(course, subscriptionRequest.userId))
+
+        savedSubscription.apply {
+            userHelper.sendSubscription(userId, course.courseId!!)
+
+        }
+
+        return savedSubscription
     }
 }

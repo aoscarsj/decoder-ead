@@ -4,6 +4,7 @@ import course.common.rest.RestException
 import course.core.course.exception.CourseException
 import course.integrations.service.authuser.client.AuthUserClient
 import course.integrations.service.authuser.data.User
+import course.integrations.service.authuser.data.UserSubscriptionRequest
 import feign.FeignException
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
@@ -28,6 +29,17 @@ class UserHelper(
         } catch (e: Exception) {
 
             logger.error("Error in finding users by course {}", e.stackTrace)
+            throw e
+        }
+    }
+
+    fun sendSubscription(userId: UUID, courseId: UUID) {
+
+        try {
+            userClient.sendSubscription(userId, UserSubscriptionRequest(courseId))
+        } catch (e: Exception) {
+
+            logger.error("Error in sending subscription {}", e.stackTrace)
             throw e
         }
     }
