@@ -32,7 +32,7 @@ data class User(
     var status: UserStatus = UserStatus.ACTIVE,
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    val type: UserType = UserType.STUDENT,
+    var type: UserType = UserType.STUDENT,
     @Column(length = 20)
     var phoneNumber: String = "",
     @Column(length = 20)
@@ -42,7 +42,7 @@ data class User(
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     val created: LocalDateTime = LocalDateTime.now(ZoneId.of("UTC")),
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
-    val updated: LocalDateTime? = null,
+    var updated: LocalDateTime? = null,
 
     ) : RepresentationModel<User>(), Serializable {
     companion object {

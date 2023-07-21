@@ -4,6 +4,7 @@ import authuser.core.user.data.request.UserCreateRequest
 import authuser.core.user.data.request.UserSearchRequest
 import authuser.core.user.data.request.UserUpdateRequest
 import authuser.core.user.data.User
+import authuser.core.user.data.request.InstructorRequest
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import java.util.*
@@ -19,4 +20,5 @@ interface UserService {
     fun update(userId: UUID, updateRequest: UserUpdateRequest): User
     fun updatePassword(userId: UUID, updateRequest: UserUpdateRequest)
     fun updateImage(userId: UUID, updateRequest: UserUpdateRequest): User
+    fun insertInstructor(instructorRequest: InstructorRequest): User
 }

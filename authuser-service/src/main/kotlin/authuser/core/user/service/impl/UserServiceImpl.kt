@@ -6,6 +6,7 @@ import authuser.common.extension.isUsername
 import authuser.common.rest.RestException
 import authuser.common.rest.RestItemError
 import authuser.core.user.data.User
+import authuser.core.user.data.request.InstructorRequest
 import authuser.core.user.data.request.UserCreateRequest
 import authuser.core.user.data.request.UserSearchRequest
 import authuser.core.user.data.request.UserUpdateRequest
@@ -24,6 +25,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus.*
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 import java.util.*
 
 @Service
@@ -218,6 +220,22 @@ class UserServiceImpl(
 
         logger.info("signup for userId: ${user.userId} completed successfully")
         return user
+    }
+
+    override fun insertInstructor(instructorRequest: InstructorRequest): User {
+
+        logger.info("Validate instructor request started")
+
+        return with(instructorRequest) {
+            val user = find(userId)
+
+            user.type = User.UserType.INSTRUCTOR
+            user.updated = LocalDateTime.now()
+
+            logger.info("User #$userId successfully updated to instructor.")
+
+            userRepository.save(user)
+        }
     }
 
     private fun validateSignupRequest(request: UserCreateRequest) {
