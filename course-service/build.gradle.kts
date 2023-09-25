@@ -12,7 +12,7 @@ group = "com.decoder.course"
 version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
-extra["springCloudVersion"] = "2021.0.6"
+extra["springCloudVersion"] = "2021.0.8"
 
 repositories {
     mavenCentral()
@@ -29,10 +29,12 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter")
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("org.postgresql:postgresql")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     implementation("org.springframework.boot:spring-boot-starter-log4j2")
+    implementation(kotlin("stdlib-jdk8"))
 }
 
 dependencyManagement {
