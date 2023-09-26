@@ -1,5 +1,6 @@
 package course.integrations.service.authuser.client
 
+import course.common.const.AUTHUSER_SERVICES
 import course.common.const.AUTHUSER_SERVICES_USERS_BY_COURSE_RESOURCE
 import course.common.const.AUTHUSER_SERVICES_USER_BASE_RESOURCE
 import course.common.const.AUTHUSER_SERVICES_USER_SUBSCRIPTION_RESOURCE
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import java.util.*
 
-@FeignClient(name = "authuser-services-v1", url = "\${ead.api.url.authuser}")
+@FeignClient(name = AUTHUSER_SERVICES)
 interface AuthUserClient {
 
     @GetMapping(AUTHUSER_SERVICES_USERS_BY_COURSE_RESOURCE)
