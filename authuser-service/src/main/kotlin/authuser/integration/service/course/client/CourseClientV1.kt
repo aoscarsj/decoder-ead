@@ -1,5 +1,6 @@
 package authuser.integration.service.course.client
 
+import authuser.common.const.COURSE_SERVICES
 import authuser.common.const.COURSE_SERVICES_COURSES_BY_USERS_RESOURCE
 import authuser.common.const.COURSE_SERVICES_COURSE_FIND_RESOURCE
 import authuser.common.const.COURSE_SERVICES_SUBSCRIPTION_RESOURCE
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import java.util.*
 
 
-@FeignClient(name = "course-services-v1", url = "\${ead.api.url.course}")
+@FeignClient(name = COURSE_SERVICES)
 interface CourseClientV1 {
 
     @GetMapping(COURSE_SERVICES_COURSES_BY_USERS_RESOURCE)
