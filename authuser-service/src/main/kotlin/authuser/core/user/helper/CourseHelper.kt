@@ -1,8 +1,10 @@
 package authuser.core.user.helper
 
+import authuser.core.user.exception.CourseIntegrationException
 import authuser.core.user.exception.UserException
 import authuser.integration.service.course.client.CourseClientV1
 import authuser.integration.service.course.data.Course
+import authuser.integration.service.course.data.request.SubscriptionRequest
 import feign.FeignException
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
@@ -29,15 +31,22 @@ class CourseHelper(
             )
         } catch (e: FeignException) {
             logger.error("Error on finding courses by user, $e")
-            throw e
+            throw CourseIntegrationException()
         }
+    }
+
+    fun sendSubscription(courseId: UUID, userId: UUID) = try {
+        courseClient.saveSubscriptionUserInCourse(courseId, SubscriptionRequest(userId))
+    } catch (e: FeignException) {
+        logger.error("Error when sending subscription for course, courseId $courseId, userId $userId")
+        throw CourseIntegrationException()
     }
 
     fun find(courseId: UUID): Course = try {
         courseClient.findCourse(courseId).response!!
     } catch (e: FeignException) {
         logger.error("Error on finding course #$courseId, $e")
-        throw e
+        throw CourseIntegrationException()
     }
 
 }

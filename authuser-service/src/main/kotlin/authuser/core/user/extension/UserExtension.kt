@@ -1,7 +1,7 @@
 package authuser.core.user.extension
 
 import authuser.core.user.data.User
-import authuser.core.user.rest.v1.UserRestV1
+import authuser.core.user.rest.external.v1.UserRestV1
 import org.springframework.data.domain.Page
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder
 

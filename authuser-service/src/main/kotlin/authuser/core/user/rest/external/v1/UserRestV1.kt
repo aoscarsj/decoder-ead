@@ -1,4 +1,4 @@
-package authuser.core.user.rest.v1
+package authuser.core.user.rest.external.v1
 
 import authuser.common.rest.RestResponse
 import authuser.core.user.data.User

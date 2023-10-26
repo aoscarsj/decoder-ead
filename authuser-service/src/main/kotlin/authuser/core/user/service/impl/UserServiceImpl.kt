@@ -13,8 +13,8 @@ import authuser.core.user.data.request.UserUpdateRequest
 import authuser.core.user.exception.PasswordException
 import authuser.core.user.exception.UserException
 import authuser.core.user.exception.UserRegistrationException
-import authuser.core.user.repository.UserCourseRepository
 import authuser.core.user.repository.UserRepository
+import authuser.core.user.service.UserCourseService
 import authuser.core.user.service.UserService
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
@@ -31,7 +31,7 @@ import java.util.*
 @Service
 class UserServiceImpl(
     private val userRepository: UserRepository,
-    private val userCourseRepository: UserCourseRepository
+    private val userCourseService: UserCourseService
 ) : UserService {
 
     private val passwordEncoder: BCryptPasswordEncoder = BCryptPasswordEncoder()
@@ -77,7 +77,7 @@ class UserServiceImpl(
     override fun findAllByCourse(courseId: UUID, page: Pageable): Page<User> {
 
         logger.info("searching users by course #$courseId")
-        return userCourseRepository.findAllByCourseId(courseId, page).map { it.user }
+        return userCourseService.findAllByCourse(courseId, page).map { it.user }
     }
 
 
@@ -92,6 +92,7 @@ class UserServiceImpl(
     override fun delete(userId: UUID) {
 
         logger.warn("Deleting user by userId: #$userId")
+        userCourseService.removeAllByUser(userId)
         return userRepository.delete(find(userId))
     }
 

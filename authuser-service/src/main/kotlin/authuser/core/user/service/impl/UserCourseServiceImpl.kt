@@ -9,6 +9,8 @@ import authuser.core.user.repository.UserCourseRepository
 import authuser.core.user.service.UserCourseService
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus.CONFLICT
 import org.springframework.http.HttpStatus.UNAUTHORIZED
 import org.springframework.stereotype.Service
@@ -32,7 +34,8 @@ class UserCourseServiceImpl(
     }
 
     @Transactional
-    override fun insert(user: User, subscriptionRequest: UserSubscriptionRequest): UserCourse {
+    override fun insert(user: User, subscriptionRequest: UserSubscriptionRequest, courseNotify: Boolean):
+            UserCourse {
 
         subscriptionRequest.apply {
             logger.info(
@@ -43,11 +46,28 @@ class UserCourseServiceImpl(
                 throw SubscriptionException("Error: subscription already exists!", CONFLICT)
             if (user.status == User.UserStatus.BLOCKED)
                 throw SubscriptionException("Error: User is blocked!", UNAUTHORIZED)
-            courseHelper.find(courseId)
+
+            if (courseNotify) notifyCourse(courseId, user.userId!!)
 
             return userCourseRepository.save(UserCourse.from(user, subscriptionRequest.courseId))
         }
 
+    }
+
+    private fun notifyCourse(courseId: UUID, userId: UUID) {
+        courseHelper.sendSubscription(courseId, userId)
+    }
+
+    override fun findAllByCourse(courseId: UUID, pageable: Pageable): Page<UserCourse> {
+        return userCourseRepository.findAllByCourseId(courseId, pageable)
+    }
+
+    override fun removeAllByUser(userId: UUID) {
+        logger.warn("Starting deletion by userId #$userId")
+
+        val userCourses = userCourseRepository.findAllByUserUserId(userId)
+        logger.warn("Deleting $userCourses")
+        userCourseRepository.deleteAll(userCourses)
     }
 
 }
