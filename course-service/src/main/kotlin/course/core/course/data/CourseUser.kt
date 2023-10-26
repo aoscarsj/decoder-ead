@@ -26,4 +26,7 @@ data class CourseUser(
             CourseUser(course = course, userId = userId)
 
     }
+
+    override fun toString(): String = "CourseUser(courseUserId: $courseUserId, course: $course, " +
+            "userId: $userId"
 }

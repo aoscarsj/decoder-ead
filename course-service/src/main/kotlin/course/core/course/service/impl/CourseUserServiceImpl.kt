@@ -10,6 +10,8 @@ import course.core.course.service.CourseUserService
 import course.integrations.service.authuser.data.User
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -30,10 +32,28 @@ class CourseUserServiceImpl(
         return userEnrolled
     }
 
+    override fun findAllByUser(userId: UUID, pageable: Pageable): Page<Course> {
+        logger.info("Searching courses by user #$userId")
+        val courses = courseUserRepository.findAllByUserId(userId, pageable).map { it.course }
+        logger.info("courses found: $courses, size: ${courses.totalElements}")
+        return courses
+    }
+
+    override fun removeByCourse(course: Course) {
+        logger.info("Removing courseUser by course #${course.courseId}")
+        val courseUsers = courseUserRepository.findAllByCourse(course)
+        logger.info("courses users found: $courseUsers, size: ${courseUsers.size}")
+        courseUsers.forEach {
+            logger.warn("Deleting $it")
+            courseUserRepository.delete(it)
+        }
+    }
+
     @Transactional
     override fun insert(
         course: Course,
-        subscriptionRequest: CourseSubscriptionRequest
+        subscriptionRequest: CourseSubscriptionRequest,
+        userNotify: Boolean
     ): CourseUser {
 
         logger.info(
@@ -49,14 +69,17 @@ class CourseUserServiceImpl(
             throw CourseUserRegistrationException(
                 "Error: User is blocked.", HttpStatus.UNAUTHORIZED
             )
+        if (userNotify)
+            notifyAuthuserSubscription(subscriptionRequest.userId, course.courseId!!)
+        val savedCourseUser = courseUserRepository.save(
+            CourseUser.from(course, subscriptionRequest.userId)
+        )
+        logger.info("User ${user.userId} successfully registered in course ${course.courseId}")
+        return savedCourseUser
+    }
 
-        val savedSubscription = courseUserRepository.save(CourseUser.from(course, subscriptionRequest.userId))
-
-        savedSubscription.apply {
-            userHelper.sendSubscription(userId, course.courseId!!)
-
-        }
-
-        return savedSubscription
+    private fun notifyAuthuserSubscription(userId: UUID, courseId: UUID) {
+        logger.info("Sending subscription notify to authuser, userId $userId, courseId $courseId")
+        userHelper.sendSubscription(userId, courseId)
     }
 }

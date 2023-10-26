@@ -1,4 +1,4 @@
-package course.core.course.rest.v1
+package course.core.course.rest.external.v1
 
 import course.common.rest.RestResponse
 import course.core.course.data.Course

@@ -10,5 +10,6 @@ import java.util.UUID
 interface CourseUserRepository: JpaRepository<CourseUser, UUID> {
 
     fun findAllByUserId(userId: UUID, pageable: Pageable): Page<CourseUser>
+    fun findAllByCourse(course: Course): List<CourseUser>
     fun existsByCourseAndUserId(course: Course, userId: UUID): Boolean
 }

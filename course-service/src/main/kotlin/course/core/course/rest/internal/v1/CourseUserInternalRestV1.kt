@@ -1,17 +1,12 @@
-package course.core.course.rest.v1
+package course.core.course.rest.internal.v1
 
 import course.common.rest.RestResponse
 import course.core.course.data.CourseUser
 import course.core.course.data.request.CourseSubscriptionRequest
-import course.core.course.helper.UserHelper
 import course.core.course.service.CourseService
 import course.core.course.service.CourseUserService
-import course.integrations.service.authuser.data.User
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
-import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import java.util.*
@@ -19,24 +14,12 @@ import javax.validation.Valid
 
 @RestController
 @CrossOrigin(origins = ["*"], maxAge = 3600)
-@RequestMapping("/courses")
-class CourseUserRestV1(
-    private val userHelper: UserHelper,
+@RequestMapping("internal/courses")
+class CourseUserInternalRestV1(
     private val courseService: CourseService,
     private val courseUserService: CourseUserService
 ) {
-
     private val logger: Logger by lazy { LogManager.getLogger(this.javaClass) }
-
-    @GetMapping("/{courseId}/users")
-    fun findAllUsersByCourse(@PathVariable courseId: UUID, @PageableDefault page: Pageable):
-            RestResponse<Page<User>> {
-
-        logger.info("Starting searches for users by course #$courseId")
-        return RestResponse(
-            "Users was collected", response = userHelper.findUsersByCourse(courseId, page)
-        )
-    }
 
     @PostMapping("/{courseId}/users/subscription")
     fun saveSubscriptionUserInCourse(
@@ -47,7 +30,9 @@ class CourseUserRestV1(
         logger.info("Starting save subscription user in course")
         val course = courseService.find(courseId)
 
-        return RestResponse("Subscription created successfully", httpStatus = HttpStatus.CREATED,
-            response =  courseUserService.insert(course, subscriptionRequest))
+        return RestResponse(
+            "Subscription created successfully", httpStatus = HttpStatus.CREATED,
+            response = courseUserService.insert(course, subscriptionRequest, false)
+        )
     }
 }
