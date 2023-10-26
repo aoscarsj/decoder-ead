@@ -8,7 +8,7 @@ spring:
   profiles:
     active: development
   application:
-    name: authuser-services
+    name: ead-authuser-services
   datasource:
     url: jdbc:postgresql://localhost:5432/ead-authuser
     username: postgres
@@ -30,7 +30,7 @@ spring:
 ead:
   api:
     name:
-      course: "course-services"
+      course: "ead-course-services"
 logging:
   level:
     authuser: TRACE
