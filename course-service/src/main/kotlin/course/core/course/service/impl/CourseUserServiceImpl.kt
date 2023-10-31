@@ -39,14 +39,21 @@ class CourseUserServiceImpl(
         return courses
     }
 
+    @Transactional
     override fun removeByCourse(course: Course) {
         logger.info("Removing courseUser by course #${course.courseId}")
         val courseUsers = courseUserRepository.findAllByCourse(course)
-        logger.info("courses users found: $courseUsers, size: ${courseUsers.size}")
-        courseUsers.forEach {
-            logger.warn("Deleting $it")
-            courseUserRepository.delete(it)
-        }
+        logger.info(
+            "courses users found: $courseUsers, size: ${courseUsers.size}, starting " +
+                    "removal"
+        )
+        courseUserRepository.deleteAll(courseUsers)
+    }
+
+    @Transactional
+    override fun removeByUser(userId: UUID) {
+        logger.info("Starting removal userCourses based on userId #$userId")
+        courseUserRepository.removeAllByUserId(userId)
     }
 
     @Transactional

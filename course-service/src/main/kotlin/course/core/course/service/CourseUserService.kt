@@ -11,7 +11,9 @@ interface CourseUserService {
     fun userEnrolledInCourse(course: Course, userId: UUID): Boolean
     fun findAllByUser(userId: UUID, pageable: Pageable): Page<Course>
     fun removeByCourse(course: Course)
-    fun insert(course: Course, subscriptionRequest: CourseSubscriptionRequest, userNotify:
-    Boolean = true):
-            CourseUser
+    fun removeByUser(userId: UUID)
+    fun insert(
+        course: Course, subscriptionRequest: CourseSubscriptionRequest, userNotify:
+        Boolean = true
+    ): CourseUser
 }

@@ -47,7 +47,17 @@ class CourseUserRestV1(
         logger.info("Starting save subscription user in course")
         val course = courseService.find(courseId)
 
-        return RestResponse("Subscription created successfully", httpStatus = HttpStatus.CREATED,
-            response =  courseUserService.insert(course, subscriptionRequest))
+        return RestResponse(
+            "Subscription created successfully", httpStatus = HttpStatus.CREATED,
+            response = courseUserService.insert(course, subscriptionRequest)
+        )
+    }
+
+    @DeleteMapping("/users/{userId}")
+    fun removeAllSubscriptions(@PathVariable userId: UUID): RestResponse<Any> {
+
+        logger.warn("Starting to remove user enrollment from all courses")
+        courseUserService.removeByUser(userId)
+        return RestResponse("Subscriptions removed successfully", httpStatus = HttpStatus.OK)
     }
 }
