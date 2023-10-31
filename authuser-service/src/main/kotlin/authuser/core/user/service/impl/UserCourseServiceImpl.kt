@@ -62,11 +62,13 @@ class UserCourseServiceImpl(
         return userCourseRepository.findAllByCourseId(courseId, pageable)
     }
 
+    @Transactional
     override fun removeAllByUser(userId: UUID) {
         logger.warn("Starting deletion by userId #$userId")
 
         val userCourses = userCourseRepository.findAllByUserUserId(userId)
         logger.warn("Deleting $userCourses")
+        courseHelper.removeSubscription(userId)
         userCourseRepository.deleteAll(userCourses)
     }
 

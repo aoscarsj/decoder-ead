@@ -49,4 +49,11 @@ class CourseHelper(
         throw CourseIntegrationException()
     }
 
+    fun removeSubscription(userId: UUID) = try {
+        courseClient.removeSubscription(userId)
+    } catch (e: FeignException) {
+        logger.error("Error on try remove subscription user #$userId, $e")
+        throw CourseIntegrationException()
+    }
+
 }
