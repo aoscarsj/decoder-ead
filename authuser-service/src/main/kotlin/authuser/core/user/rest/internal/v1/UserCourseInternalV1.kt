@@ -35,4 +35,12 @@ class UserCourseInternalV1(
             userCourseService.insert(user, subscriptionRequest, false)
         )
     }
+
+    @DeleteMapping("/courses/{courseId}")
+    fun removeSubscription(@PathVariable courseId: UUID): RestResponse<Any> {
+
+        logger.info("Starting unsubscribe from all course users courseId: $courseId")
+        userCourseService.removeAllByCourse(courseId)
+        return RestResponse("Removed all course users", httpStatus = HttpStatus.OK)
+    }
 }

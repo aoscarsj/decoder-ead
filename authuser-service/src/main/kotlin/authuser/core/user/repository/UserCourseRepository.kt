@@ -11,4 +11,5 @@ interface UserCourseRepository : JpaRepository<UserCourse, UUID> {
     fun findAllByCourseId(courseId: UUID, pageable: Pageable): Page<UserCourse>
     fun existsByUserAndCourseId(user: User, courseId: UUID): Boolean
     fun findAllByUserUserId(userId: UUID): List<UserCourse>
+    fun removeAllByCourseId(courseId: UUID)
 }

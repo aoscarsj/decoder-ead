@@ -17,4 +17,5 @@ interface UserCourseService {
 
     fun findAllByCourse(courseId: UUID, pageable: Pageable): Page<UserCourse>
     fun removeAllByUser(userId: UUID)
+    fun removeAllByCourse(courseId: UUID)
 }

@@ -34,7 +34,11 @@ class UserCourseServiceImpl(
     }
 
     @Transactional
-    override fun insert(user: User, subscriptionRequest: UserSubscriptionRequest, courseNotify: Boolean):
+    override fun insert(
+        user: User,
+        subscriptionRequest: UserSubscriptionRequest,
+        courseNotify: Boolean
+    ):
             UserCourse {
 
         subscriptionRequest.apply {
@@ -70,6 +74,13 @@ class UserCourseServiceImpl(
         logger.warn("Deleting $userCourses")
         courseHelper.removeSubscription(userId)
         userCourseRepository.deleteAll(userCourses)
+    }
+
+    @Transactional
+    override fun removeAllByCourse(courseId: UUID) {
+        logger.warn("Starting deletion userCourse by course #$courseId")
+
+        userCourseRepository.removeAllByCourseId(courseId)
     }
 
 }
