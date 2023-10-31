@@ -41,7 +41,7 @@ class CourseUserServiceImpl(
 
     @Transactional
     override fun removeByCourse(course: Course) {
-        logger.info("Removing courseUser by course #${course.courseId}")
+        logger.info("M=removeByCourse, Removing courseUser by course #${course.courseId}")
         val courseUsers = courseUserRepository.findAllByCourse(course)
         logger.info(
             "courses users found: $courseUsers, size: ${courseUsers.size}, starting " +

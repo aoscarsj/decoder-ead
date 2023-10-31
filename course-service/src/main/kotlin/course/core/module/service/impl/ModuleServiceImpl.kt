@@ -8,6 +8,8 @@ import course.core.module.data.request.ModuleUpdateRequest
 import course.core.module.exception.ModuleException
 import course.core.module.repository.ModuleRepository
 import course.core.module.service.ModuleService
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -19,6 +21,9 @@ class ModuleServiceImpl(
     private val moduleRepository: ModuleRepository,
     private val lessonService: LessonService,
 ) : ModuleService {
+
+    private val logger: Logger by lazy { LogManager.getLogger(this.javaClass) }
+
     @Transactional
     override fun delete(courseId: UUID, moduleId: UUID) {
 
@@ -53,12 +58,13 @@ class ModuleServiceImpl(
         moduleRepository.findIntoCourse(courseId, moduleId)
             ?: throw ModuleException("Module not found for this course", HttpStatus.NOT_FOUND)
 
+    @Transactional
     override fun findAllIntoCourse(courseId: UUID): List<Module> =
         moduleRepository.findAllModulesIntoCourse(courseId)
 
     @Transactional
     override fun removeAllIntoCourse(courseId: UUID) {
-
+        logger.info("M=removeAllIntoCourse")
         val modules = findAllIntoCourse(courseId)
 
         if (modules.isNotEmpty()) {

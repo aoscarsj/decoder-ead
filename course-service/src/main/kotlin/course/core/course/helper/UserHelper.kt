@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
 @Component
@@ -39,6 +40,15 @@ class UserHelper(
             logger.error("Error in finding users by course {}", e.stackTrace)
             throw e
         }
+    }
+
+    @Transactional
+    fun removeSubscription(courseId: UUID) = try {
+        logger.info("M=removeSubscription")
+        userClient.removeSubscription(courseId)
+    } catch (e: FeignException) {
+        logger.error("Error on remove subscription in authuser integration")
+        throw RestException(INTERNAL_SERVER_ERROR, "Error in remove subscription")
     }
 
     fun sendSubscription(userId: UUID, courseId: UUID) {

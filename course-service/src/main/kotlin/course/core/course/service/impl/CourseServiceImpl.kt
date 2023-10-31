@@ -6,6 +6,7 @@ import course.core.course.data.request.CourseSearchRequest
 import course.core.course.data.request.CourseUpdateRequest
 import course.core.course.exception.CourseException
 import course.core.course.exception.CourseRegistrationException
+import course.core.course.helper.UserHelper
 import course.core.course.repository.CourseRepository
 import course.core.course.service.CourseService
 import course.core.course.service.CourseUserService
@@ -18,7 +19,6 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus.CONFLICT
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
 
@@ -26,17 +26,18 @@ import java.util.*
 class CourseServiceImpl(
     private val courseRepository: CourseRepository,
     private val moduleService: ModuleService,
-    private val courseUserService: CourseUserService
+    private val courseUserService: CourseUserService,
+    private val userHelper: UserHelper
 ) : CourseService {
 
     private val logger: Logger by lazy { LogManager.getLogger(this.javaClass) }
 
-    @Transactional // only transaction if something goes wrong, return
     override fun delete(courseId: UUID) {
 
         val course = find(courseId)
         moduleService.removeAllIntoCourse(courseId)
         courseUserService.removeByCourse(course)
+        userHelper.removeSubscription(courseId)
         courseRepository.delete(course)
     }
 
