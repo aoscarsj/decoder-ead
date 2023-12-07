@@ -27,6 +27,8 @@ spring:
   output:
     ansi:
       enabled: always
+  rabbitmq:
+    addresses: amqps://vlnqinpd:7ARwZijrn7JSqvo9y3PN67PBI7qVzVyn@moose.rmq.cloudamqp.com/vlnqinpd
 ead:
   api:
     name:
