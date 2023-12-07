@@ -53,13 +53,6 @@ class CourseRestV1(
     ): RestResponse<Page<Course>> =
         RestResponse("Courses was collected", courseService.findAll(searchRequest, page))
 
-    @GetMapping("/users/{userId}")
-    fun findAllByUser(
-        @PathVariable userId: UUID, @PageableDefault page: Pageable
-    ): RestResponse<Page<Course>> =
-        RestResponse("Courses was collected", courseService.findAllByUser(userId, page))
-
-
     @GetMapping("/{courseId}")
     fun find(@PathVariable(value = "courseId") courseId: UUID): RestResponse<Course> =
         RestResponse("Course was collected", courseService.find(courseId))

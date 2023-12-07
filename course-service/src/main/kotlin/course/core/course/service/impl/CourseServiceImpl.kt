@@ -9,7 +9,6 @@ import course.core.course.exception.CourseRegistrationException
 import course.core.course.helper.UserHelper
 import course.core.course.repository.CourseRepository
 import course.core.course.service.CourseService
-import course.core.course.service.CourseUserService
 import course.core.module.service.ModuleService
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
@@ -26,7 +25,6 @@ import java.util.*
 class CourseServiceImpl(
     private val courseRepository: CourseRepository,
     private val moduleService: ModuleService,
-    private val courseUserService: CourseUserService,
     private val userHelper: UserHelper
 ) : CourseService {
 
@@ -36,7 +34,6 @@ class CourseServiceImpl(
 
         val course = find(courseId)
         moduleService.removeAllIntoCourse(courseId)
-        courseUserService.removeByCourse(course)
         userHelper.removeSubscription(courseId)
         courseRepository.delete(course)
     }
@@ -118,12 +115,6 @@ class CourseServiceImpl(
         }
 
     }
-
-    override fun findAllByUser(userId: UUID, pageable: Pageable): Page<Course> {
-        logger.info("searching courses by user #$userId")
-        return courseUserService.findAllByUser(userId, pageable)
-    }
-
 
     private fun validateUpdateRequest(updateRequest: CourseUpdateRequest) {
 
