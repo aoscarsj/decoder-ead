@@ -20,4 +20,6 @@ interface UserService {
     fun updatePassword(userId: UUID, updateRequest: UserUpdateRequest)
     fun updateImage(userId: UUID, updateRequest: UserUpdateRequest): User
     fun insertInstructor(instructorRequest: InstructorRequest): User
+    fun save(user: User): User
+    fun saveAndPublish(user: User): User
 }

@@ -33,6 +33,9 @@ ead:
   api:
     name:
       course: "ead-course-services"
+  broker:
+    exchange:
+      userEvent: ead.userevent
 logging:
   level:
     authuser: TRACE

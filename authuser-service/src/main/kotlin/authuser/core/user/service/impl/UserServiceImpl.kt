@@ -5,7 +5,9 @@ import authuser.common.extension.isEmail
 import authuser.common.extension.isUsername
 import authuser.common.rest.RestException
 import authuser.common.rest.RestItemError
+import authuser.core.user.data.ActionType
 import authuser.core.user.data.User
+import authuser.core.user.data.UserEvent
 import authuser.core.user.data.request.InstructorRequest
 import authuser.core.user.data.request.UserCreateRequest
 import authuser.core.user.data.request.UserSearchRequest
@@ -13,6 +15,7 @@ import authuser.core.user.data.request.UserUpdateRequest
 import authuser.core.user.exception.PasswordException
 import authuser.core.user.exception.UserException
 import authuser.core.user.exception.UserRegistrationException
+import authuser.core.user.publisher.UserEventPublisher
 import authuser.core.user.repository.UserRepository
 import authuser.core.user.service.UserService
 import org.apache.logging.log4j.LogManager
@@ -30,7 +33,8 @@ import java.util.*
 
 @Service
 class UserServiceImpl(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val userEventPublisher: UserEventPublisher
 ) : UserService {
 
     private val passwordEncoder: BCryptPasswordEncoder = BCryptPasswordEncoder()
@@ -209,7 +213,7 @@ class UserServiceImpl(
         validateUserInformation(user)
 
         user.password = passwordEncoder.encode(user.password)
-        userRepository.save(user)
+        saveAndPublish(user)
 
         logger.info("signup for userId: ${user.userId} completed successfully")
         return user
@@ -229,6 +233,16 @@ class UserServiceImpl(
 
             userRepository.save(user)
         }
+    }
+
+    override fun save(user: User): User = userRepository.save(user)
+
+    @Transactional
+    override fun saveAndPublish(user: User): User {
+        val savedUser = save(user)
+        userEventPublisher.publishUserEvent(UserEvent.from(savedUser, ActionType.CREATE))
+
+        return savedUser
     }
 
     private fun validateSignupRequest(request: UserCreateRequest) {
