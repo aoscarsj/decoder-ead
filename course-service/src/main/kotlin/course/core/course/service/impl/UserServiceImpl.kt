@@ -1,5 +1,6 @@
 package course.core.course.service.impl
 
+import course.core.course.data.User
 import course.core.course.repository.UserRepository
 import course.core.course.service.UserService
 import org.apache.logging.log4j.LogManager
@@ -12,5 +13,9 @@ class UserServiceImpl(
 ) : UserService {
 
     private val logger: Logger by lazy { LogManager.getLogger(this.javaClass) }
+    override fun save(user: User): User {
+        logger.info("Saving user $user")
+        return userRepository.save(user)
+    }
 
 }

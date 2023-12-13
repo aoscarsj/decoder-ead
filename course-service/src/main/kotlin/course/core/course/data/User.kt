@@ -10,10 +10,16 @@ import javax.persistence.*
 @Table(name = "TB_USERS")
 data class User(
 
-    @Id @Column(nullable = false) val userId: UUID
+    @Id @Column(nullable = false) val userId: UUID,
+
 ) : Serializable {
     companion object {
         private const val serialVersionUID: Long = 1L
-        fun from(course: Course, userId: UUID): User = User(userId = userId)
+        fun from(userEvent: UserEvent): User =
+            with(userEvent) {
+                User(
+                    userId = userId
+                )
+            }
     }
 }
