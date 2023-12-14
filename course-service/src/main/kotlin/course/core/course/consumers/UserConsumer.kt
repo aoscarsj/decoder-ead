@@ -1,6 +1,6 @@
 package course.core.course.consumers
 
-import course.core.course.data.ActionType
+import course.core.course.data.ActionType.*
 import course.core.course.data.User
 import course.core.course.data.UserEvent
 import course.core.course.service.UserService
@@ -31,8 +31,8 @@ class UserConsumer(
         val user = User.from(userEvent)
 
         when (userEvent.actionType) {
-            ActionType.CREATE -> userService.save(user)
-            else -> {}
+            CREATE, UPDATE -> userService.save(user)
+            DELETE -> userService.delete(user.userId)
         }
     }
 }
