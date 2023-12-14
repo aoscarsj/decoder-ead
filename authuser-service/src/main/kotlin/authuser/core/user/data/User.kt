@@ -1,6 +1,7 @@
 package authuser.core.user.data
 
 import authuser.core.user.data.request.UserCreateRequest
+import authuser.core.user.data.request.UserUpdateRequest
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
@@ -62,7 +63,21 @@ data class User(
             }
         }
     }
-
+    fun update(updateRequest: UserUpdateRequest): User {
+        this.apply {
+            if (!updateRequest.email.isNullOrEmpty())
+                email = updateRequest.email
+            if (!updateRequest.fullName.isNullOrEmpty())
+                fullName = updateRequest.fullName
+            if (!updateRequest.phoneNumber.isNullOrEmpty())
+                phoneNumber = updateRequest.phoneNumber
+            if (!updateRequest.cpf.isNullOrEmpty())
+                cpf = updateRequest.cpf
+            if (updateRequest.status != null)
+                status = updateRequest.status
+        }
+        return this
+    }
     enum class UserStatus { ACTIVE, BLOCKED }
     enum class UserType { ADMIN, STUDENT, INSTRUCTOR }
 }

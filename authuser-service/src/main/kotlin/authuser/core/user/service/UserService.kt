@@ -1,5 +1,6 @@
 package authuser.core.user.service
 
+import authuser.core.user.data.ActionType
 import authuser.core.user.data.request.UserCreateRequest
 import authuser.core.user.data.request.UserSearchRequest
 import authuser.core.user.data.request.UserUpdateRequest
@@ -19,7 +20,7 @@ interface UserService {
     fun update(userId: UUID, updateRequest: UserUpdateRequest): User
     fun updatePassword(userId: UUID, updateRequest: UserUpdateRequest)
     fun updateImage(userId: UUID, updateRequest: UserUpdateRequest): User
-    fun insertInstructor(instructorRequest: InstructorRequest): User
+    fun updateForInstructor(instructorRequest: InstructorRequest): User
     fun save(user: User): User
-    fun saveAndPublish(user: User): User
+    fun saveAndPublish(user: User, actionType: ActionType): User
 }

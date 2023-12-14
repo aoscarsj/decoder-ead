@@ -18,7 +18,7 @@ class InstructorRestV1 (
 ){
     @PostMapping("/subscription")
     fun createInstructor(@RequestBody instructorRequest: InstructorRequest):RestResponse<User> {
-        val user = userService.insertInstructor(instructorRequest)
+        val user = userService.updateForInstructor(instructorRequest)
 
         return RestResponse("User successfully updated to instructor.", user)
     }

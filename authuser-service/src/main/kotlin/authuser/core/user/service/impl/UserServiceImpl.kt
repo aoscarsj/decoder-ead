@@ -89,37 +89,25 @@ class UserServiceImpl(
     override fun delete(userId: UUID) {
 
         logger.warn("Deleting user by userId: #$userId")
-        return userRepository.delete(find(userId))
+        val user = find(userId)
+        publish(user, ActionType.DELETE)
+        userRepository.delete(user)
     }
 
     override fun existsByUsername(user: User): Boolean =
         userRepository.existsByUsername(user.username)
 
 
+    @Transactional
     override fun update(userId: UUID, updateRequest: UserUpdateRequest): User {
 
         logger.info("Starting user update")
         validateRequest(updateRequest)
 
-        val user = find(userId)
-
-        logger.info("user to be changed, userId: #${user.userId}")
-        updateRequest.apply {
-
-            if (!email.isNullOrEmpty())
-                user.email = email
-            if (!fullName.isNullOrEmpty())
-                user.fullName = fullName
-            if (!phoneNumber.isNullOrEmpty())
-                user.phoneNumber = phoneNumber
-            if (!cpf.isNullOrEmpty())
-                user.cpf = cpf
-            if (status != null)
-                user.status = status
-        }
+        val user = find(userId).update(updateRequest)
 
         logger.info("Saving updated user, userId: #${user.userId}")
-        return userRepository.save(user)
+        return saveAndPublish(user, ActionType.UPDATE)
     }
 
     private fun validateRequest(request: UserUpdateRequest) {
@@ -198,7 +186,7 @@ class UserServiceImpl(
             throw UserException("ImageUrl cannot be null or empty", BAD_REQUEST)
 
         user.imageUrl = updateRequest.imageUrl
-        userRepository.save(user)
+        saveAndPublish(user, ActionType.UPDATE)
 
         return user
     }
@@ -213,13 +201,13 @@ class UserServiceImpl(
         validateUserInformation(user)
 
         user.password = passwordEncoder.encode(user.password)
-        saveAndPublish(user)
+        saveAndPublish(user, ActionType.CREATE)
 
         logger.info("signup for userId: ${user.userId} completed successfully")
         return user
     }
 
-    override fun insertInstructor(instructorRequest: InstructorRequest): User {
+    override fun updateForInstructor(instructorRequest: InstructorRequest): User {
 
         logger.info("Validate instructor request started")
 
@@ -231,18 +219,20 @@ class UserServiceImpl(
 
             logger.info("User #$userId successfully updated to instructor.")
 
-            userRepository.save(user)
+            saveAndPublish(user, ActionType.UPDATE)
         }
     }
 
     override fun save(user: User): User = userRepository.save(user)
 
     @Transactional
-    override fun saveAndPublish(user: User): User {
-        val savedUser = save(user)
-        userEventPublisher.publishUserEvent(UserEvent.from(savedUser, ActionType.CREATE))
+    override fun saveAndPublish(user: User, actionType: ActionType): User {
+        return publish(save(user), actionType)
+    }
 
-        return savedUser
+    private fun publish(user: User, actionType: ActionType): User {
+        userEventPublisher.publishUserEvent(UserEvent.from(user, actionType))
+        return user
     }
 
     private fun validateSignupRequest(request: UserCreateRequest) {
