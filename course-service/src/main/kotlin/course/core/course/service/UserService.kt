@@ -6,4 +6,5 @@ import java.util.UUID
 interface UserService {
     fun save(user: User): User
     fun delete(userId: UUID)
+    fun find(userId: UUID): User
 }

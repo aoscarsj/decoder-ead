@@ -45,7 +45,15 @@ data class Course(
         mappedBy = "course", fetch = FetchType.LAZY
     )
     @Fetch(FetchMode.SUBSELECT)
-    val modules: MutableSet<Module> = mutableSetOf()
+    val modules: MutableSet<Module> = mutableSetOf(),
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "TB_COURSES_USERS", joinColumns = [JoinColumn(name = "course_id")],
+        inverseJoinColumns = [JoinColumn(name = "userId")]
+    )
+    val users: MutableSet<User> = mutableSetOf(),
+
 ) : Serializable {
 
     companion object {

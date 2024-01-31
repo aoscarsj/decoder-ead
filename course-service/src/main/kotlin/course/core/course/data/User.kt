@@ -1,6 +1,7 @@
 package course.core.course.data
 
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.annotation.JsonProperty
 import java.io.Serializable
 import java.util.*
 import javax.persistence.*
@@ -32,7 +33,11 @@ data class User(
     @Enumerated(EnumType.STRING)
     var actionType: ActionType,
 
-    ) : Serializable {
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY)
+    val courses: Set<Course> = mutableSetOf()
+
+) : Serializable {
     companion object {
         private const val serialVersionUID: Long = 1L
         fun from(userEvent: UserEvent): User =
@@ -51,4 +56,9 @@ data class User(
                 )
             }
     }
+
+    fun isStudent(): Boolean = this.userType == "STUDENT"
+
+    fun isBlocked(): Boolean = this.userStatus == "BLOCKED"
+
 }

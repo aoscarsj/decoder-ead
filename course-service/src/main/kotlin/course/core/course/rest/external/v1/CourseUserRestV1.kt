@@ -39,10 +39,11 @@ class CourseUserRestV1(
         @PathVariable courseId: UUID,
         @RequestBody @Valid subscriptionRequest: CourseSubscriptionRequest
     ): RestResponse<course.core.course.data.User> {
-
         logger.info("Starting save subscription user in course")
-        val course = courseService.find(courseId)
 
-        TODO()
+        return RestResponse(
+            "User enrolled in the course", response = courseService
+                .saveSubscription(courseId, subscriptionRequest)
+        )
     }
 }

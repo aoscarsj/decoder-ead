@@ -1,6 +1,7 @@
 package course.core.course.service.impl
 
 import course.core.course.data.User
+import course.core.course.exception.UserException
 import course.core.course.repository.UserRepository
 import course.core.course.service.UserService
 import org.apache.logging.log4j.LogManager
@@ -22,6 +23,12 @@ class UserServiceImpl(
     override fun delete(userId: UUID) {
         logger.info("Deleting user #$userId")
         userRepository.deleteById(userId)
+    }
+
+    override fun find(userId: UUID): User {
+        logger.info("Searching user #$userId")
+
+        return userRepository.findByUserId(userId) ?: throw UserException("User $userId not found")
     }
 
 }

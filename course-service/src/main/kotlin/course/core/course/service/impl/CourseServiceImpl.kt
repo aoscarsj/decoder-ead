@@ -1,23 +1,27 @@
 package course.core.course.service.impl
 
 import course.core.course.data.Course
+import course.core.course.data.User
 import course.core.course.data.request.CourseRegistrationRequest
 import course.core.course.data.request.CourseSearchRequest
+import course.core.course.data.request.CourseSubscriptionRequest
 import course.core.course.data.request.CourseUpdateRequest
 import course.core.course.exception.CourseException
 import course.core.course.exception.CourseRegistrationException
+import course.core.course.exception.CourseUserSubscriptionException
 import course.core.course.helper.UserHelper
 import course.core.course.repository.CourseRepository
 import course.core.course.service.CourseService
+import course.core.course.service.UserService
 import course.core.module.service.ModuleService
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.http.HttpStatus.CONFLICT
-import org.springframework.http.HttpStatus.NOT_FOUND
+import org.springframework.http.HttpStatus.*
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
 
@@ -25,7 +29,8 @@ import java.util.*
 class CourseServiceImpl(
     private val courseRepository: CourseRepository,
     private val moduleService: ModuleService,
-    private val userHelper: UserHelper
+    private val userHelper: UserHelper,
+    private val userService: UserService
 ) : CourseService {
 
     private val logger: Logger by lazy { LogManager.getLogger(this.javaClass) }
@@ -116,6 +121,36 @@ class CourseServiceImpl(
 
     }
 
+    @Transactional
+    override fun saveSubscription(
+        courseId: UUID,
+        subscriptionRequest: CourseSubscriptionRequest
+    ): User {
+
+        subscriptionRequest.apply {
+            val userIsAlreadyRegistered = courseRepository.existsByCourseAndUser(
+                courseId,
+                userId
+            )
+
+            if (userIsAlreadyRegistered) throw CourseUserSubscriptionException(
+                """Error: Subscription already""", CONFLICT
+            )
+
+            val user = userService.find(userId)
+
+            if(user.isBlocked())
+                throw CourseUserSubscriptionException("Error: User is blocked", UNAUTHORIZED)
+
+            val course = find(courseId)
+            course.users.add(user)
+            courseRepository.save(course)
+
+            logger.info("User #$userId enrolled in the course #$courseId")
+            return user
+        }
+    }
+
     private fun validateUpdateRequest(updateRequest: CourseUpdateRequest) {
 
         updateRequest.apply {
@@ -128,9 +163,17 @@ class CourseServiceImpl(
     private fun validateCreateRequest(courseCreateRequest: CourseRegistrationRequest) {
 
         courseCreateRequest.apply {
+            validateInstructor(instructorId)
             validateCourseName(name)
             validateCourseDescription(description)
         }
+    }
+
+    private fun validateInstructor(instructorId: UUID) {
+
+        val user = userService.find(instructorId)
+        if (user.isStudent())
+            throw CourseRegistrationException("User must be INSTRUCTOR or ADMIN", UNAUTHORIZED)
     }
 
     private fun validateCourseDescription(description: String) {
