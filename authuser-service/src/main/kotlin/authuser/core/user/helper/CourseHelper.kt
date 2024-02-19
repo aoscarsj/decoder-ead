@@ -6,9 +6,11 @@ import authuser.integration.service.course.client.CourseClientV1
 import authuser.integration.service.course.data.Course
 import authuser.integration.service.course.data.request.SubscriptionRequest
 import feign.FeignException
+import io.github.resilience4j.retry.annotation.Retry
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
@@ -22,6 +24,10 @@ class CourseHelper(
     private val logger: Logger by lazy { LogManager.getLogger(this.javaClass) }
 
 
+    //  CAUTION: 1 request -> 3 requests, 3 requests -> 9 requests.
+    //  Use retry with caution, it can cause a lot of requests.
+    //  The idea about circuit breaker is to prevent too many requests, retry does the opposite.
+    @Retry(name = "retryInstance", fallbackMethod = "findMockRetryReturn")
     fun findCoursesByUser(userId: UUID, page: Pageable):
             Page<Course> {
 
@@ -33,6 +39,15 @@ class CourseHelper(
             logger.error("Error on finding courses by user, $e")
             throw CourseIntegrationException()
         }
+    }
+
+    fun findMockRetryReturn(
+        userId: UUID,
+        page: Pageable,
+        throwable: Throwable
+    ): Page<Course> {
+        logger.error("Inside retry fallback method, cause: ${throwable.message}")
+        return PageImpl(mutableListOf())
     }
 
     fun sendSubscription(courseId: UUID, userId: UUID) = try {
