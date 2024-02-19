@@ -5,12 +5,21 @@ import course.core.course.data.Course.*
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import java.util.*
 
 interface CourseRepository : JpaRepository<Course, UUID> {
     fun existsCourseByName(name: String): Boolean
+
+    @Modifying
+    @Query(value = "delete from tb_courses_users where course_id= :courseId", nativeQuery = true)
+    fun deleteCourseUserByCourse(@Param("courseId") courseId: UUID)
+
+    @Modifying
+    @Query(value = "delete from tb_courses_users where user_id= :userId", nativeQuery = true)
+    fun deleteCourseUserByUser(@Param("userId") userId: UUID)
 
     fun findAllByStatusAndLevel(status: CourseStatus, level: CourseLevel, pageable: Pageable):
             Page<Course>

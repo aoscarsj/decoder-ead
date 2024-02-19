@@ -1,10 +1,10 @@
 package course.core.course.rest.external.v1
 
 import course.common.rest.RestResponse
+import course.core.course.data.User
 import course.core.course.data.request.CourseSubscriptionRequest
 import course.core.course.helper.UserHelper
 import course.core.course.service.CourseService
-import course.integrations.service.authuser.data.User
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.springframework.data.domain.Page
@@ -38,7 +38,7 @@ class CourseUserRestV1(
     fun saveSubscriptionUserInCourse(
         @PathVariable courseId: UUID,
         @RequestBody @Valid subscriptionRequest: CourseSubscriptionRequest
-    ): RestResponse<course.core.course.data.User> {
+    ): RestResponse<User> {
         logger.info("Starting save subscription user in course")
 
         return RestResponse(
