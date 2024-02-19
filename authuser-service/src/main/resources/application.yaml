@@ -49,6 +49,20 @@ eureka:
       default-zone: 'http://localhost:8761/eureka'
   instance:
     hostname: localhost
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: full
+
+resilience4j:
+  retry:
+    instances:
+      retryInstance:
+        maxAttempts: 3
+        waitDuration: 5s
 
 ---
 spring:
