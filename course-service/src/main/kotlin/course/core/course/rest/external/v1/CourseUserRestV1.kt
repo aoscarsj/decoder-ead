@@ -1,6 +1,7 @@
 package course.core.course.rest.external.v1
 
 import course.common.rest.RestResponse
+import course.core.course.data.Course
 import course.core.course.data.User
 import course.core.course.data.request.CourseSubscriptionRequest
 import course.core.course.helper.UserHelper
@@ -45,5 +46,13 @@ class CourseUserRestV1(
             "User enrolled in the course", response = courseService
                 .saveSubscription(courseId, subscriptionRequest)
         )
+    }
+
+    @GetMapping("/users/{userId}")
+    fun findCoursesByUser(@PathVariable userId: UUID, @PageableDefault page: Pageable):
+            RestResponse<Page<Course>> {
+
+        logger.info("Starting searches for courses by user #$userId")
+        TODO()
     }
 }

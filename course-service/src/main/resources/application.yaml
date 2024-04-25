@@ -25,7 +25,7 @@ spring:
   autoconfigure:
     exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
   rabbitmq:
-    addresses: amqps://vlnqinpd:7ARwZijrn7JSqvo9y3PN67PBI7qVzVyn@moose.rmq.cloudamqp.com/vlnqinpd
+    addresses: amqps://errfwrpr:3S-wbyI52TdlmtbH9ZQAlcds5W77mHnV@beaver.rmq.cloudamqp.com/errfwrpr
 ead:
   api:
     url:
