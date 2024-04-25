@@ -28,7 +28,7 @@ spring:
     ansi:
       enabled: always
   rabbitmq:
-    addresses: amqps://vlnqinpd:7ARwZijrn7JSqvo9y3PN67PBI7qVzVyn@moose.rmq.cloudamqp.com/vlnqinpd
+    addresses: amqps://errfwrpr:3S-wbyI52TdlmtbH9ZQAlcds5W77mHnV@beaver.rmq.cloudamqp.com/errfwrpr
 ead:
   api:
     name:
@@ -58,6 +58,15 @@ feign:
         loggerLevel: full
 
 resilience4j:
+  circuitbreaker:
+    instances:
+      circuitBreakerInstance:
+        slidingWindowSize: 30
+        permittedNumberOfCallsInHalfOpenState: 2
+        slidingWindowType: TIME_BASED
+        minimumNumberOfCalls: 2
+        waitDurationInOpenState: 30s
+        failureRateThreshold: 80
   retry:
     instances:
       retryInstance:

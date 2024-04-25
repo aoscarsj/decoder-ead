@@ -6,6 +6,7 @@ import authuser.integration.service.course.client.CourseClientV1
 import authuser.integration.service.course.data.Course
 import authuser.integration.service.course.data.request.SubscriptionRequest
 import feign.FeignException
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker
 import io.github.resilience4j.retry.annotation.Retry
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
@@ -27,7 +28,8 @@ class CourseHelper(
     //  CAUTION: 1 request -> 3 requests, 3 requests -> 9 requests.
     //  Use retry with caution, it can cause a lot of requests.
     //  The idea about circuit breaker is to prevent too many requests, retry does the opposite.
-    @Retry(name = "retryInstance", fallbackMethod = "findMockRetryReturn")
+//    @Retry(name = "retryInstance", fallbackMethod = "findMockRetryReturn")
+    @CircuitBreaker(name = "circuitBreakerInstance", fallbackMethod = "findMockRetryReturn")
     fun findCoursesByUser(userId: UUID, page: Pageable):
             Page<Course> {
 
