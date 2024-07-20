@@ -1,54 +1,10 @@
-server:
-  port: 8082
-  servlet:
-    context-path: '/ead-course/'
-application:
-  prefix: CS
 spring:
-  profiles:
-    active: development
   application:
     name: ead-course-services
-  datasource:
-    url: jdbc:postgresql://localhost:5432/ead-course
-    username: postgres
-    password: d3c0d3r
-  jpa:
-    hibernate:
-      ddl-auto: update
-      dialect: org.hibernate.dialect.PostgreSQLDialect
-      jdbc:
-        lob.nom-contextual-creation: true
-        properties:
-          hibernate:
-            show_sql: true
-  autoconfigure:
-    exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
-  rabbitmq:
-    addresses: amqps://errfwrpr:3S-wbyI52TdlmtbH9ZQAlcds5W77mHnV@beaver.rmq.cloudamqp.com/errfwrpr
-ead:
-  api:
-    url:
-      authuser: ead-authuser-services
-  broker:
-    exchange:
-      userEventExchange: ead.userevent
-    queue:
-      userEventQueue:
-        name: ead.userevent.ms.course
-
-eureka:
-  client:
-    service-url:
-      default-zone: 'http://localhost:8761/eureka'
-  instance:
-    hostname: localhost
-
----
-spring:
-  profiles: development
-
----
-spring:
-  profiles: production
-
+  config:
+    import: 'configserver:'
+  cloud:
+    config:
+      discovery:
+        serviceId: ead-config-server
+      label: main
